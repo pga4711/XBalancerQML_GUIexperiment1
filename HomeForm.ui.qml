@@ -6,13 +6,14 @@ Page {
     id: page
     width: 600
     height: 400
-
+    anchors.fill: parent
     title: qsTr("Home")
     
     ColumnLayout {
         id: mainColumnLayout
         anchors.fill: parent
         
+
         RowLayout {
             id: measurementPanelRowLayout
             Layout.fillHeight: false
@@ -83,16 +84,6 @@ Page {
             }
         }
 
-
-        Button {
-            id: debugButton
-            text: qsTr("DebugPrint")
-            Layout.fillHeight: false
-            Layout.fillWidth: false
-            clip: false
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-
-        }
 
         Image {
             id: image
