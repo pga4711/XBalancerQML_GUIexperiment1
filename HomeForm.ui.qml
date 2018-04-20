@@ -7,7 +7,7 @@ Page {
     width: 600
     height: 400
     anchors.fill: parent
-    title: qsTr("Home")
+    title: qsTr("Home123")
     
     ColumnLayout {
         id: mainColumnLayout
