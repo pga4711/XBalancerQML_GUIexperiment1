@@ -1,5 +1,7 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.3
+
 
 ApplicationWindow {
     id: window
@@ -31,6 +33,17 @@ ApplicationWindow {
         Label {
             text: stackView.currentItem.title
             anchors.centerIn: parent
+        }
+
+        RowLayout {
+
+            anchors.right: parent.right
+            ToolButton {
+                text: "Print"
+            }
+            ToolButton {
+                text: "Help"
+            }
         }
     }
 
@@ -67,3 +80,8 @@ ApplicationWindow {
         anchors.fill: parent
     }
 }
+
+
+
+///   Se först   Help | Print | Stop | Measure | Exit
+//    Andra      Static Couple | Remove weight | Split on | Change unit | Trace On
