@@ -6,5 +6,8 @@
         <file>Page2Form.ui.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>files/images/XbalancerOnlycirclesBIG.jpg</file>
+        <file>files/images/XbalancerOnlycirclesBIG2.jpg</file>
+        <file>main.cpp</file>
+        <file>DebugFunctions.qml</file>
     </qresource>
 </RCC>
