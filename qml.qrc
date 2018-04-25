@@ -9,5 +9,7 @@
         <file>files/images/XbalancerOnlycirclesBIG2.jpg</file>
         <file>main.cpp</file>
         <file>DebugFunctions.qml</file>
+        <file>files/images/ic_menu_black_48dp.png</file>
+        <file>files/images/ic_chevron_left_black_48dp.png</file>
     </qresource>
 </RCC>

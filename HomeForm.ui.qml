@@ -17,7 +17,7 @@ Page {
     ColumnLayout {
         id: mainColumnLayout
         anchors.fill: parent
-
+/*
         RowLayout {
             id: measurementPanelRowLayout
 
@@ -86,6 +86,8 @@ Page {
                 font.pixelSize: 22
             }
         }
+        end of RowLayout
+        */
 
         Image {
             id: image
