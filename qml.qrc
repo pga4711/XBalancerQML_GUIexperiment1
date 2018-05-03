@@ -11,5 +11,8 @@
         <file>DebugFunctions.qml</file>
         <file>files/images/ic_menu_black_48dp.png</file>
         <file>files/images/ic_chevron_left_black_48dp.png</file>
+        <file>Page3Test.qml</file>
+        <file>CustomPolarChartView1.qml</file>
+        <file>Page4TestWithDualViews.qml</file>
     </qresource>
 </RCC>

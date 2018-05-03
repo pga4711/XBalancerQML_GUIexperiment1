@@ -5,21 +5,11 @@ import QtQuick.Layouts 1.3
 ApplicationWindow {
     id: window
     visible: true
-    width: 640
-    height: 480
+    width: 1280
+    height: 720
 
     title: qsTr("Stack")
-    /*
-    header: Button {
-        width: 70
-        height: 70
 
-        anchors.left: parent.left
-        anchors.top: parent.top
-        text: "HELLO1234"
-        onClicked: { console.log("This is text"); }
-    }
-    */
 
     header: ToolBar {
         id: toolBar
@@ -33,55 +23,21 @@ ApplicationWindow {
             ToolButton {
                 id: toolButton
 
-                function inHomeForm() {
-                    //Om depth är lika med 1är mindre än 1, så är vi utanför
-                    if (stackView.depth == 1)
-                    {
-                        return false
-
-                    }
-                    else
-                    {
-                        return  true
-                    }
-
-                }
-
-
-                icon {
-                    name: "menu"
-                    source: "files/images/ic_menu_black_48dp.png"
-                }
-
-                icon {
-                    name: "back"
-                    source: "files/images/ic_chevron_left_black_48dp.png"
-                }
-
-
-                /*
-                text: {
-                    if (stackView.depth > 1)
-                    {
-                        return "\u25C0"
-
-                    }
-                    else
-                    {
-                        return  "Menu \u2630"
-                    }
-
-                }
-                */
-                //MAKE THIS BUTTON BIGGER.
-
-
-
-                //text: stackView.depth > 1 ? "\u25C0" : "Menu \u2630"
                 font.pixelSize: Qt.application.font.pixelSize * 1.6
-                onClicked: {
 
-                    //Important GUI-logic:
+                icon {
+                    source: {
+                        if (stackView.depth == 1) {
+                            return "files/images/ic_menu_black_48dp.png"
+                        }
+                        else {
+                            return "files/images/ic_chevron_left_black_48dp.png"
+                        }
+                    }
+                }
+
+                onClicked: {
+                    //Swap Form:
                     if (stackView.depth > 1) {
                         stackView.pop()
                     } else {
@@ -89,23 +45,8 @@ ApplicationWindow {
                     }
 
                     console.log("This is stackView.depth: " + stackView.depth)
-
-                    console.log("          toolBar.width: " + toolBar.width);
-                    console.log("         toolBar.height: " + toolBar.height);
-                    console.log("  toolBar.implicitWidth: " + toolBar.implicitWidth);
-                    console.log(" toolBar.implicitHeight: " + toolBar.implicitHeight);
-                    console.log("  toolBar.contentHeight: " + toolBar.contentHeight);
-                    console.log("   toolBar.contentWidth: " + toolBar.contentWidth);
-
-                    console.log("          toolButton.width: " + toolButton.width);
-                    console.log("         toolButton.height: " + toolButton.height);
-                    console.log("  toolButton.implicitWidth: " + toolButton.implicitWidth);
-                    console.log(" toolButton.implicitHeight: " + toolButton.implicitHeight);
-                    console.log("  toolButton.contentHeight: " + toolButton.contentHeight);
-                    console.log("   toolButton.contentWidth: " + toolButton.contentWidth);
-
-                    console.log(" measurementPanelRowLayout.implicitHeight: " + measurementPanelRowLayout.implicitHeight);
                 }
+
             }
 
 
@@ -215,12 +156,34 @@ ApplicationWindow {
                     drawer.close()
                 }
             }
+
+
+            ItemDelegate {
+                text: qsTr("Page 3 - PhilipsChartTest")
+                width: parent.width
+                onClicked: {
+                    stackView.push("Page3Test.qml")
+                    drawer.close()
+                }
+            }
+            ItemDelegate {
+                text: qsTr("Page 4 - TestWithDualViews")
+                width: parent.width
+                onClicked: {
+                    stackView.push("Page4TestWithDualViews.qml")
+                    drawer.close()
+                }
+            }
+
         }
     }
 
     StackView {
         id: stackView
+        //
         initialItem: "HomeForm.ui.qml"
+        //initialItem: "Page3Test.qml"
+        //:/
         anchors.fill: parent
     }
 }
