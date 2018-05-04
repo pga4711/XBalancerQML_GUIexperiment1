@@ -23,7 +23,7 @@ Page {
             Layout.fillHeight: true
             Layout.fillWidth: true
 
-           Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
             source: "files/images/XbalancerOnlycirclesBIG2.jpg"
         }

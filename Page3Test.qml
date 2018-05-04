@@ -4,7 +4,6 @@ import QtQuick.Layouts 1.3
 import QtCharts 2.2
 
 Page {
-
     title: qsTr("Page 3 Test")
 
     RowLayout {
@@ -40,6 +39,7 @@ Page {
             tickCount: 6
 
         }
+
         SplineSeries {
             id: series1
             axisAngular: axisAngular
@@ -52,7 +52,7 @@ Page {
             axisAngular: axisAngular
             markerSize: 10
         }
-    //Add data dymanic
+    //Add data dymanically
 
         Component.onCompleted: {
             for (var i = 0; i <= 360; i+=20) {

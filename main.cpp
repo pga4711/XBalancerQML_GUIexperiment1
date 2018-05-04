@@ -1,5 +1,5 @@
 #include <QApplication>
-//#include <QGuiApplication>
+#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QDebug>
 
