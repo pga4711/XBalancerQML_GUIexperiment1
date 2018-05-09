@@ -166,6 +166,7 @@ ApplicationWindow {
                     drawer.close()
                 }
             }
+            /*
             ItemDelegate {
                 text: qsTr("Page 4 - TestWithDualViews")
                 width: parent.width
@@ -174,6 +175,7 @@ ApplicationWindow {
                     drawer.close()
                 }
             }
+            */
 
         }
     }
@@ -181,7 +183,8 @@ ApplicationWindow {
     StackView {
         id: stackView
         //
-        initialItem: "HomeForm.ui.qml"
+        initialItem: "HomeForm.qml"
+        //initialItem: "HomeForm.ui.qml"
         //initialItem: "Page3Test.qml"
         //:/
         anchors.fill: parent
