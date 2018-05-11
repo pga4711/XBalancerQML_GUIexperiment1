@@ -14,41 +14,6 @@ Page {
             anchors.fill: parent //???????????
             columns: parent.width > parent.height ? -1 : 1
 
-            property double currentDiagramMaxValue  //This is to get access to max in axisRadiaRight.max
-
-            property double currentMaxLimit
-            property double currentMinLimit
-
-            ListModel {
-                id: balancingModel1
-
-                ListElement {
-                    a: 47 //angle
-                    r: 20  //radius
-                }
-
-                ListElement {
-                    a: 47 //angle
-                    r: 8  //radius
-                }
-
-                ListElement {
-                    a: 45 //angle
-                    r: 7  //radius
-                }
-                ListElement {
-                    a: 40;
-                    r: 6
-                }
-                ListElement {
-                    a: 42
-                    r: 3
-                }
-                ListElement {
-                    a: 41
-                    r: 2
-                }
-            }
 
             PolarChartView {
                 id: leftCPCV
@@ -58,24 +23,9 @@ Page {
                 antialiasing: true
 
                 Layout.fillHeight: true
-                Layout.fillWidth: true
-
-                //funkar inte:
-                PinchArea {
-                    pinch.target: leftCPCV
-                    Component.onCompleted:  {
-                        console.log("This is pinch.enabled: " + enabled)
-                        console.log("This is pinch.active: " + pinch.active)
-                    }
-                    onPinchStarted: {
-                        console.log("onPinchStarted")
+                Layout.fillWidth: true             
 
 
-                    }
-
-                    onPinchUpdated: { console.log("onPinchUpdated") }
-                    onPinchFinished: { console.log("onPinchFinished") }
-                }
 
                 ValueAxis {
                     id: axisAngularLeft
@@ -98,10 +48,10 @@ Page {
                     axisAngular: axisAngularLeft
                     axisRadial: axisRadialLeft
                     pointsVisible: true
-                    color: "#FF4136" //RED. but i think i have to change it...make it more theme-like
-
+                    color: "#FF4136" //RED. but it is very thin?
 
                 }
+
 
                 Component.onCompleted: {
                     seriesLeft.append(90, 30)
@@ -113,12 +63,17 @@ Page {
             }
 
             PolarChartView {
+                //rightPolarChartView
                 id: rightCPCV
                 title: "Right Polar Diagram"
                 legend.visible: false
                 antialiasing: true
                 Layout.fillHeight: true;
                 Layout.fillWidth: true
+
+                property double currentDiagramMaxValueRightCPCV  //This is to get access to max in axisRadiaRight.max
+                property double currentMaxLimitRightCPCV
+                property double currentMinLimitRightCPCV
 
                 ValueAxis {
                     id: axisAngularRight
@@ -131,12 +86,9 @@ Page {
                 ValueAxis {
                     id: axisRadialRight
                     min: 0
-                    //max: 240//max = maxValueOfRadialList(?)
-                    //max: polarChartViewGrid.maxValueAsProp * 1.2 //?????????????????????????????? RISKY I DONT KNOW , i do something else than this now
-                    max: polarChartViewGrid.currentDiagramMaxValue
+                    max: rightCPCV.currentDiagramMaxValueRightCPCV
                     tickCount: 6
                     visible: true
-
                     onMaxChanged: {console.log("MAX changed and MAX is " + max) }
                 }
 
@@ -145,108 +97,143 @@ Page {
                     axisAngular: axisAngularRight
                     axisRadial: axisRadialRight
                     pointsVisible: true
-                    Component.onCompleted: {
-                        console.log("This is color: " + color)
-                    }
-
                 }
 
-                Component.onCompleted: {
+                //DATA
+                ListModel {
+                    id: balancingModelLeft1
 
-                    //populate seriesRight
-                    for (var i = 0; i < balancingModel1.count ; i++)
-                    {
-                        seriesRight.append(balancingModel1.get(i).a,balancingModel1.get(i).r);
-                        console.log("appending " + balancingModel1.get(i).r)
+                    ListElement {
+                        a: 47 //angle
+                        r: 20  //radius
+                    }
+
+                    ListElement {
+                        a: 47 //angle
+                        r: 8  //radius
+                    }
+
+                    ListElement {
+                        a: 45 //angle
+                        r: 7  //radius
+                    }
+                    ListElement {
+                        a: 40;
+                        r: 6
+                    }
+                    ListElement {
+                        a: 42
+                        r: 3
+                    }
+                    ListElement {
+                        a: 41
+                        r: 2
                     }
                 }
 
+
+                //PRESENTATION+PRESENTATION.with.BUSINESS_depends_on_DATA
                 Button {
+                    id: zoomOutButtonRightCPCV
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
                     text: "-"
                     font.pointSize: 25
                     onClicked: {
-                        var possibleDiagramMaxValue = polarChartViewGrid.currentDiagramMaxValue*1.15
-                        var worstCaseMaxZoomValue = polarChartViewGrid.currentMaxLimit*1.2
+                        var possibleDiagramMaxValue = parent.currentDiagramMaxValueRightCPCV*1.15
+                        var worstCaseMaxZoomValue = parent.currentMaxLimitRightCPCV*1.2
+/*
+                        console.log("currentDiagramMaxValueRightCPCV : " + polarChartViewGrid.currentDiagramMaxValueRightCPCV)
+                        console.log("currentMaxLimitRightCPCV        : " + polarChartViewGrid.currentMaxLimitRightCPCV)
 
-                        console.log("currentDiagramMaxValue : " + polarChartViewGrid.currentDiagramMaxValue)
-                        console.log("currentMaxLimit        : " + polarChartViewGrid.currentMaxLimit)
-
-                        console.log("possibleDiagramMaxValue: " + possibleDiagramMaxValue + "  (polarChartViewGrid.currentDiagramMaxValue*1.15)")
-                        console.log("worstCaseMaxZoomValue  : " + worstCaseMaxZoomValue +  "  (polarChartViewGrid.currentMaxLimit*1.2)")
-
+                        console.log("possibleDiagramMaxValue: " + possibleDiagramMaxValue + "  (polarChartViewGrid.currentDiagramMaxValueRightCPCV*1.15)")
+                        console.log("worstCaseMaxZoomValue  : " + worstCaseMaxZoomValue +  "  (polarChartViewGrid.currentMaxLimitRightCPCV*1.2)")
+*/
                         if (possibleDiagramMaxValue > worstCaseMaxZoomValue)
-                             polarChartViewGrid.currentDiagramMaxValue = worstCaseMaxZoomValue
+                             parent.currentDiagramMaxValueRightCPCV = worstCaseMaxZoomValue
                         else
-                             polarChartViewGrid.currentDiagramMaxValue = possibleDiagramMaxValue  //Things are OK, we could zoom by out 15%
+                             parent.currentDiagramMaxValueRightCPCV = possibleDiagramMaxValue  //Things are OK, we could zoom by out 15%
+
                     }
                 }
 
                 Button {
+                    id: zoomInButtonRightCPCV
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
                     text: "+"
                     font.pointSize: 25
 
                     onClicked: {
-                        var possibleDiagramMaxValue = polarChartViewGrid.currentDiagramMaxValue*0.85 //15% zoomning
-                        var worstCaseMinZoomValue =  polarChartViewGrid.currentMinLimit*1.2
+                        var possibleDiagramMaxValue = parent.currentDiagramMaxValueRightCPCV*0.85 //15% zoomning
+                        var worstCaseMinZoomValue =  parent.currentMinLimitRightCPCV*1.2
 
                         if (possibleDiagramMaxValue < worstCaseMinZoomValue)
                         {
                             //Oj, det blir innanför gränsen. Sätt istället till absolut minsta tillåtna skala.
-                            polarChartViewGrid.currentDiagramMaxValue = worstCaseMinZoomValue
+                            parent.currentDiagramMaxValueRightCPCV = worstCaseMinZoomValue
                         }
                         else
                         {
-                            polarChartViewGrid.currentDiagramMaxValue = possibleDiagramMaxValue//Gör 15% zoomning,
+                            parent.currentDiagramMaxValueRightCPCV = possibleDiagramMaxValue//Gör 15% zoomning,
                         }
                     }
                 }
+
+
+                //Populate PRESENTATION with exemplified DATA  AND get MAX and MIN value of the list
+                Component.onCompleted: {
+
+                    //populate seriesRight
+                    for (var i = 0; i < balancingModelLeft1.count ; i++)
+                    {
+                        seriesRight.append(balancingModelLeft1.get(i).a,balancingModelLeft1.get(i).r);
+                        console.log("appending " + balancingModelLeft1.get(i).r)
+                    }
+
+
+
+
+                    //Denna Component.onCompleted körs endast 1 gång.
+                    //Calculate max value of the listmodel
+                    var currMaxValue = 0;
+                    for (var i = 0; i < balancingModelLeft1.count ; i++)
+                    {
+                        if (currMaxValue < balancingModelLeft1.get(i).r)
+                        {
+                            currMaxValue = balancingModelLeft1.get(i).r
+                        }
+                    }
+                    console.log("This was the largest number: " + currMaxValue)
+
+                    currentMaxLimitRightCPCV = currMaxValue  //Nu har jag hittat maxvärdet. Spara maxvärdet i den hära globala currentMaxLimitRightCPCV som zoomfunktionen kan få nytta av.
+                    currentDiagramMaxValueRightCPCV = currentMaxLimitRightCPCV * 1.2  //Vyn ska alltid börja med att man ser punktens område +20% extra i polardiagrammet. Detta sätts bara en gång. Typ default är detta.
+
+                    console.log("Soo, this is currentDiagramMaxValueRightCPCV: " + currentDiagramMaxValueRightCPCV);
+
+
+                    //Calculate min value of the listmodel
+                    //balancingModelLeft1 CANNOT BE ZERO IN SIZE FOR THE MOMENT
+
+                    var currMinValue = balancingModelLeft1.get(0).r
+                    for (var j = 0; j < balancingModelLeft1.count ; j++)
+                    {
+                        if (currMinValue> balancingModelLeft1.get(j).r)
+                        {
+                            //The old value was larger than the current comparing value. Let's save our new smaller value.
+                            currMinValue = balancingModelLeft1.get(j).r
+                        }
+                    }
+
+                    console.log("This was the smallest number: " + currMinValue)
+                    currentMinLimitRightCPCV = currMinValue
+                    console.log("This is the currentMinLimitRightCPCV: " + currentMinLimitRightCPCV)
+
+                }
+
+
             }
 
-
-            Component.onCompleted: {
-
-                //Denna Component.onCompleted körs endast 1 gång.
-                //Calculate max value of the listmodel
-                var currMaxValue = 0;
-                for (var i = 0; i < balancingModel1.count ; i++)
-                {
-                    if (currMaxValue < balancingModel1.get(i).r)
-                    {
-                        currMaxValue = balancingModel1.get(i).r
-                    }
-                }
-                console.log("This was the largest number: " + currMaxValue)
-                //                maxValueAsProp = currMaxValue //???????????????????????????????
-
-                currentMaxLimit = currMaxValue  //Nu har jag hittat maxvärdet. Spara maxvärdet i den hära globala currentMaxLimit som zoomfunktionen kan få nytta av.
-                currentDiagramMaxValue = currentMaxLimit * 1.2  //Vyn ska alltid börja med att man ser punktens område +20% extra i polardiagrammet. Detta sätts bara en gång. Typ default är detta.
-
-
-                console.log("Soo, this is currentDiagramMaxValue: " + currentDiagramMaxValue);
-
-
-                //Calculate min value of the listmodel
-                //balancingModel1 CANNOT BE ZERO IN SIZE FOR THE MOMENT
-
-                var currMinValue = balancingModel1.get(0).r
-                for (var j = 0; j < balancingModel1.count ; j++)
-                {
-                    if (currMinValue> balancingModel1.get(j).r)
-                    {
-                        //The old value was larger than the current comparing value. Let's save our new smaller value.
-                        currMinValue = balancingModel1.get(j).r
-                    }
-                }
-
-                console.log("This was the smallest number: " + currMinValue)
-                currentMinLimit = currMinValue
-                console.log("This is the currentMinLimit: " + currentMinLimit)
-
-            }
 
 
         }

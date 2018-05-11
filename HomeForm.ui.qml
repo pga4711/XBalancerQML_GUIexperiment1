@@ -14,5 +14,4 @@ Page {
     title: qsTr("Home123")
 
 
-
 }
