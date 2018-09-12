@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>HomeForm.ui.qml</file>
-        <file>Page1Form.ui.qml</file>
         <file>Page2Form.ui.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>files/images/XbalancerOnlycirclesBIG.jpg</file>
@@ -12,5 +10,7 @@
         <file>files/images/ic_chevron_left_black_48dp.png</file>
         <file>Page3Test.qml</file>
         <file>HomeForm.qml</file>
+        <file>Page1Form.qml</file>
+        <file>Page2Spectrum.qml</file>
     </qresource>
 </RCC>

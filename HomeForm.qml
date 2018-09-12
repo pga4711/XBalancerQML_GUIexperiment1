@@ -4,16 +4,24 @@ import QtQuick.Layouts 1.3
 import QtCharts 2.2
 
 Page {
-    title: qsTr("Page HomeForm.qml")
+    id: currentPage
+    //id: mainWindow //BAD NAME. This is just for a quick connect to automatic-textSize concept.
+    title: qsTr("Page: HomeForm.qml")
+
+    property int buttonPointSize: 30
+    property string foo: "hellofrom curr page"
+
 
     ColumnLayout {
         anchors.fill: parent
 
         GridLayout {
             id: polarChartViewGrid
-            anchors.fill: parent //???????????
-            columns: parent.width > parent.height ? -1 : 1
+            //anchors.fill: parent //???????????
 
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            columns: parent.width > parent.height ? -1 : 1
 
             PolarChartView {
                 id: leftCPCV
@@ -21,9 +29,13 @@ Page {
 
                 legend.visible: false
                 antialiasing: true
-
                 Layout.fillHeight: true
-                Layout.fillWidth: true             
+                Layout.fillWidth: true
+
+                property double currentDiagramMaxValueLeftCPCV: 0  //This is to get access to max in axisRadialLeft.max
+                property double currentMaxLimitLeftCPCV: 0
+                property double currentMinLimitLeftCPCV: 0
+
 
 
 
@@ -36,11 +48,11 @@ Page {
                 ValueAxis {
                     id: axisRadialLeft
                     min: 0
-                    max: 40//SKA ÄNDRAS AUTOMATISKT VI TESTAR INTE HÄR NU
-                    //max = maxValueOfRadialList(?)
+
+                    max: leftCPCV.currentDiagramMaxValueLeftCPCV
                     tickCount: 6
                     visible: true
-
+                    onMaxChanged: {console.log("MAX changed on left and MAX is " + max) }
                 }
 
                 SplineSeries {
@@ -49,16 +61,156 @@ Page {
                     axisRadial: axisRadialLeft
                     pointsVisible: true
                     color: "#FF4136" //RED. but it is very thin?
+                }
 
+                //DATA
+                ListModel {
+                    id: balancingModelLeft1
+
+                    ListElement {
+                        a: 200 //angle
+                        r: 10  //radius
+                    }
+
+                    ListElement {
+                        a: 170 //angle
+                        r: 7  //radius
+                    }
+
+                    ListElement {
+                        a: 215 //angle
+                        r: 6  //radius
+                    }
+                    ListElement {
+                        a: 207;
+                        r: 4
+                    }
+                    ListElement {
+                        a: 195
+                        r: 3
+                    }
+                    ListElement {
+                        a: 197
+                        r: 2
+                    }
                 }
 
 
+                //PRESENTATION + PRESENTATION.with.BUSINESS_that_depends_on_DATA
+                Button {
+                    id: zoomOutButtonLeftCPCV
+                    anchors.left: parent.left
+                    anchors.bottom: parent.bottom
+                    anchors.leftMargin: 8
+                    anchors.bottomMargin: 8
+
+
+                    text: "-"
+
+                    //font.pointSize: 25 * 2
+                    font.pointSize: currentPage.buttonPointSize*2
+                    onClicked: {
+                        var possibleDiagramMaxValue = parent.currentDiagramMaxValueLeftCPCV*1.15
+                        var worstCaseMaxZoomValue = parent.currentMaxLimitLeftCPCV*1.2
+
+                        //console.log("possibleDiagramMaxValue: " + possibleDiagramMaxValue)
+                        //console.log("worstCaseMaxZoomValue  : " + worstCaseMaxZoomValue)
+
+                        if (possibleDiagramMaxValue > worstCaseMaxZoomValue)
+                        {
+                            parent.currentDiagramMaxValueLeftCPCV = worstCaseMaxZoomValue
+                        }
+                        else
+                        {
+                            parent.currentDiagramMaxValueLeftCPCV = possibleDiagramMaxValue  //Things are OK, we could zoom out with 15%
+                        }
+
+                    }
+                }
+
+                Button {
+                    id: zoomInButtonLeftCPCV
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    anchors.rightMargin: 8
+                    anchors.bottomMargin: 8
+
+
+
+                    text: "+"
+                    font.pointSize: currentPage.buttonPointSize*2
+                    //font.pointSize: 25
+
+                    onClicked: {
+                        var possibleDiagramMaxValue = parent.currentDiagramMaxValueLeftCPCV*0.85 //15% zoomning
+                        var worstCaseMinZoomValue =  parent.currentMinLimitLeftCPCV*1.2
+
+                        if (possibleDiagramMaxValue < worstCaseMinZoomValue)
+                        {
+                            //Oh, if we zoom now it will zoom to a unwanted fit. Then, instead, set to absolute minimum zoom instead.
+                            parent.currentDiagramMaxValueLeftCPCV = worstCaseMinZoomValue
+                        }
+                        else
+                        {
+                            parent.currentDiagramMaxValueLeftCPCV = possibleDiagramMaxValue//Do 15% zooming, things will look good
+                        }
+                    }
+                }
+
+
+
+
+
+                //Populate PRESENTATION with exemplified DATA  AND get MAX and MIN value of the list
                 Component.onCompleted: {
-                    seriesLeft.append(90, 30)
-                    seriesLeft.append(80, 10)
-                    console.log("Hello from Left")
+
+                    //populate seriesLeft
+                    for (var i = 0; i < balancingModelLeft1.count ; i++)
+                    {
+                        seriesLeft.append(balancingModelLeft1.get(i).a,balancingModelLeft1.get(i).r);
+                        //console.log("appending " + balancingModelLeft1.get(i).r)
+                    }
+
+                    //Calculate max value of the listmodel
+                    var currMaxValue = 0;
+
+                    for (var j = 0; j < balancingModelLeft1.count ; j++)
+                    {
+                        if (currMaxValue < balancingModelLeft1.get(j).r)
+                            currMaxValue = balancingModelLeft1.get(j).r
+                    }
+
+                    //console.log("This was the largest number of LEFT: " + currMaxValue)
+
+
+                    //Let other code to know the max-value
+                    currentMaxLimitLeftCPCV = currMaxValue
+
+                    //Set the leftCPCV to fit to the max value. The max value is +20% to get a clear view.
+                    currentDiagramMaxValueLeftCPCV = currentMaxLimitLeftCPCV * 1.2
+
+                    //console.log("Soo, this is currentDiagramMaxValueLeftCPCV: " + currentDiagramMaxValueLeftCPCV);
+
+
+                    //Calculate min value of the listmodel
+                    //balancingModelLeft1 CANNOT BE ZERO IN SIZE FOR THE MOMENT
+
+                    var currMinValue = balancingModelLeft1.get(0).r
+                    for (var k = 0; k < balancingModelLeft1.count ; k++)
+                    {
+                        if (currMinValue> balancingModelLeft1.get(k).r)
+                        {
+                            //The old value was larger than the current comparing value. Let's save our new smaller value.
+                            currMinValue = balancingModelLeft1.get(k).r
+                        }
+                    }
+
+                    //console.log("This was the smallest number: " + currMinValue)
+                    currentMinLimitLeftCPCV = currMinValue
+                    //console.log("This is the currentMinLimitLeftCPCV: " + currentMinLimitLeftCPCV)
 
                 }
+
 
             }
 
@@ -70,17 +222,34 @@ Page {
                 antialiasing: true
                 Layout.fillHeight: true;
                 Layout.fillWidth: true
+                //titleFont.pointSize: 40
 
-                property double currentDiagramMaxValueRightCPCV  //This is to get access to max in axisRadiaRight.max
-                property double currentMaxLimitRightCPCV
-                property double currentMinLimitRightCPCV
+                //Binding { target: rightCPCV.titleFont ; property: "pointSize"; value: currentPage.buttonPointSize }
+
+
+                property double currentDiagramMaxValueRightCPCV: 0  //This is to get access to max in axisRadialRight.max
+                property double currentMaxLimitRightCPCV: 0
+                property double currentMinLimitRightCPCV: 0
 
                 ValueAxis {
                     id: axisAngularRight
                     min: 0
                     max: 360
-
                     tickCount: 9
+
+
+                    //This "Binding" gives: qrc:/main.qml:213:5: QML StackView: initialItem: qrc:/HomeForm.qml:236 Cannot assign to non-existent default property
+                    //Binding { target: axisAngularRight.titleFont ; property: "pointSize"; value: currentPage.buttonPointSize }
+
+                    Component.onCompleted: {
+                        console.log("This is titleFont:" + titleFont.pointSize )
+
+                        //Does not even tell it does not work.
+                        titleFont.pointSize = Qt.binding( function() { return currentPage.buttonPointSize } )
+                        console.log("Does not work ight?")
+                        titleFont.pointSize= 40
+                        console.log("This is titleFont:" + titleFont.pointSize )
+                    }
                 }
 
                 ValueAxis {
@@ -89,7 +258,7 @@ Page {
                     max: rightCPCV.currentDiagramMaxValueRightCPCV
                     tickCount: 6
                     visible: true
-                    onMaxChanged: {console.log("MAX changed and MAX is " + max) }
+                    onMaxChanged: {console.log("MAX changed on left and MAX is " + max) }
                 }
 
                 SplineSeries {
@@ -101,7 +270,7 @@ Page {
 
                 //DATA
                 ListModel {
-                    id: balancingModelLeft1
+                    id: balancingModelRight1
 
                     ListElement {
                         a: 47 //angle
@@ -132,27 +301,34 @@ Page {
                 }
 
 
-                //PRESENTATION+PRESENTATION.with.BUSINESS_depends_on_DATA
+                //PRESENTATION + PRESENTATION.with.BUSINESS_that_depends_on_DATA
                 Button {
                     id: zoomOutButtonRightCPCV
                     anchors.left: parent.left
                     anchors.bottom: parent.bottom
+                    anchors.leftMargin: 8
+                    anchors.bottomMargin: 8
+
+
+
                     text: "-"
-                    font.pointSize: 25
+                    font.pointSize: currentPage.buttonPointSize*2
+                    //font.pointSize: 25
                     onClicked: {
                         var possibleDiagramMaxValue = parent.currentDiagramMaxValueRightCPCV*1.15
                         var worstCaseMaxZoomValue = parent.currentMaxLimitRightCPCV*1.2
-/*
-                        console.log("currentDiagramMaxValueRightCPCV : " + polarChartViewGrid.currentDiagramMaxValueRightCPCV)
-                        console.log("currentMaxLimitRightCPCV        : " + polarChartViewGrid.currentMaxLimitRightCPCV)
 
                         console.log("possibleDiagramMaxValue: " + possibleDiagramMaxValue + "  (polarChartViewGrid.currentDiagramMaxValueRightCPCV*1.15)")
                         console.log("worstCaseMaxZoomValue  : " + worstCaseMaxZoomValue +  "  (polarChartViewGrid.currentMaxLimitRightCPCV*1.2)")
-*/
+
                         if (possibleDiagramMaxValue > worstCaseMaxZoomValue)
-                             parent.currentDiagramMaxValueRightCPCV = worstCaseMaxZoomValue
+                        {
+                            parent.currentDiagramMaxValueRightCPCV = worstCaseMaxZoomValue
+                        }
                         else
-                             parent.currentDiagramMaxValueRightCPCV = possibleDiagramMaxValue  //Things are OK, we could zoom by out 15%
+                        {
+                            parent.currentDiagramMaxValueRightCPCV = possibleDiagramMaxValue  //Things are OK, we could zoom by out 15%
+                        }
 
                     }
                 }
@@ -161,8 +337,13 @@ Page {
                     id: zoomInButtonRightCPCV
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
+                    anchors.rightMargin: 8
+                    anchors.bottomMargin: 8
+
+
                     text: "+"
-                    font.pointSize: 25
+                    //font.pointSize: 25
+                    font.pointSize: currentPage.buttonPointSize*2
 
                     onClicked: {
                         var possibleDiagramMaxValue = parent.currentDiagramMaxValueRightCPCV*0.85 //15% zoomning
@@ -170,12 +351,12 @@ Page {
 
                         if (possibleDiagramMaxValue < worstCaseMinZoomValue)
                         {
-                            //Oj, det blir innanför gränsen. Sätt istället till absolut minsta tillåtna skala.
+                            //Oh, if we zoom now it will zoom to a unwanted fit. Then, instead, set to absolute minimum zoom instead.
                             parent.currentDiagramMaxValueRightCPCV = worstCaseMinZoomValue
                         }
                         else
                         {
-                            parent.currentDiagramMaxValueRightCPCV = possibleDiagramMaxValue//Gör 15% zoomning,
+                            parent.currentDiagramMaxValueRightCPCV = possibleDiagramMaxValue//Do 15% zooming, things will look good
                         }
                     }
                 }
@@ -185,57 +366,54 @@ Page {
                 Component.onCompleted: {
 
                     //populate seriesRight
-                    for (var i = 0; i < balancingModelLeft1.count ; i++)
+
+
+                    for (var i = 0; i < balancingModelRight1.count ; i++)
                     {
-                        seriesRight.append(balancingModelLeft1.get(i).a,balancingModelLeft1.get(i).r);
-                        console.log("appending " + balancingModelLeft1.get(i).r)
+                        seriesRight.append(balancingModelRight1.get(i).a,balancingModelRight1.get(i).r);
+                        //console.log("appending " + balancingModelRight1.get(i).r)
                     }
 
-
-
-
-                    //Denna Component.onCompleted körs endast 1 gång.
                     //Calculate max value of the listmodel
                     var currMaxValue = 0;
-                    for (var i = 0; i < balancingModelLeft1.count ; i++)
+
+                    for (var j = 0; j < balancingModelRight1.count ; j++)
                     {
-                        if (currMaxValue < balancingModelLeft1.get(i).r)
-                        {
-                            currMaxValue = balancingModelLeft1.get(i).r
-                        }
+                        if (currMaxValue < balancingModelRight1.get(j).r)
+                            currMaxValue = balancingModelRight1.get(j).r
                     }
-                    console.log("This was the largest number: " + currMaxValue)
 
-                    currentMaxLimitRightCPCV = currMaxValue  //Nu har jag hittat maxvärdet. Spara maxvärdet i den hära globala currentMaxLimitRightCPCV som zoomfunktionen kan få nytta av.
-                    currentDiagramMaxValueRightCPCV = currentMaxLimitRightCPCV * 1.2  //Vyn ska alltid börja med att man ser punktens område +20% extra i polardiagrammet. Detta sätts bara en gång. Typ default är detta.
+                    //console.log("This was the largest number: " + currMaxValue)
 
-                    console.log("Soo, this is currentDiagramMaxValueRightCPCV: " + currentDiagramMaxValueRightCPCV);
+
+                    //Let other code to know the max-value
+                    currentMaxLimitRightCPCV = currMaxValue
+
+                    //Set the rightCPCV to fit to the max value. The max value is +20% to get a clear view.
+                    currentDiagramMaxValueRightCPCV = currentMaxLimitRightCPCV * 1.2
+
+                    //console.log("Soo, this is currentDiagramMaxValueRightCPCV: " + currentDiagramMaxValueRightCPCV);
 
 
                     //Calculate min value of the listmodel
-                    //balancingModelLeft1 CANNOT BE ZERO IN SIZE FOR THE MOMENT
+                    //balancingModelRight1 CANNOT BE ZERO IN SIZE FOR THE MOMENT
 
-                    var currMinValue = balancingModelLeft1.get(0).r
-                    for (var j = 0; j < balancingModelLeft1.count ; j++)
+                    var currMinValue = balancingModelRight1.get(0).r
+                    for (var k = 0; k < balancingModelRight1.count ; k++)
                     {
-                        if (currMinValue> balancingModelLeft1.get(j).r)
+                        if (currMinValue> balancingModelRight1.get(k).r)
                         {
                             //The old value was larger than the current comparing value. Let's save our new smaller value.
-                            currMinValue = balancingModelLeft1.get(j).r
+                            currMinValue = balancingModelRight1.get(k).r
                         }
                     }
 
-                    console.log("This was the smallest number: " + currMinValue)
+                    //console.log("This was the smallest number: " + currMinValue)
                     currentMinLimitRightCPCV = currMinValue
-                    console.log("This is the currentMinLimitRightCPCV: " + currentMinLimitRightCPCV)
+                    //console.log("This is the currentMinLimitRightCPCV: " + currentMinLimitRightCPCV)
 
                 }
-
-
             }
-
-
-
         }
 
         ScrollView {
@@ -246,59 +424,63 @@ Page {
 
             clip: true
 
-            ScrollBar.horizontal.interactive: true
+            ScrollBar.horizontal.policy: Qt.platform.os==="windows" ? ScrollBar.AsNeeded : ScrollBar.AlwaysOff
 
             RowLayout {
                 id: buttonRowLayout
-
                 anchors.fill: parent //You should not use this?
                 clip: true
 
-                property int buttonPointSize: 40 //??
+                //property int buttonPointSize: 40 //??
 
                 Button {
                     id: button
                     text: "Help"
-                    font.pointSize: buttonRowLayout.buttonPointSize
+                     font.pointSize: currentPage.buttonPointSize
                 }
                 Button {
                     text: "Print"
-                    font.pointSize: buttonRowLayout.buttonPointSize
+                     font.pointSize: currentPage.buttonPointSize
                 }
                 Button {
                     text: "Stop"
-                    font.pointSize: buttonRowLayout.buttonPointSize
+                     font.pointSize: currentPage.buttonPointSize
                 }
                 Button {
                     text: "Measure"
-                    font.pointSize: buttonRowLayout.buttonPointSize
+                     font.pointSize: currentPage.buttonPointSize
                 }
                 Button {
                     text: "Exit"
-                    font.pointSize: buttonRowLayout.buttonPointSize
+                     font.pointSize: currentPage.buttonPointSize
                 }
                 Button {
                     text: "Static Couple"
-                    font.pointSize: buttonRowLayout.buttonPointSize
+                     font.pointSize: currentPage.buttonPointSize
                 }
                 Button {
                     text: "Remove weights"
-                    font.pointSize: buttonRowLayout.buttonPointSize
+                    font.pointSize: currentPage.buttonPointSize
                 }
                 Button {
                     text: "Split On"
-                    font.pointSize: buttonRowLayout.buttonPointSize
+                     font.pointSize: currentPage.buttonPointSize
                 }
                 Button {
                     text: "Change Unit"
-                    font.pointSize: buttonRowLayout.buttonPointSize
+                     font.pointSize: currentPage.buttonPointSize
                 }
                 Button {
                     text: "Trace On"
-                    font.pointSize: buttonRowLayout.buttonPointSize
+                     font.pointSize: currentPage.buttonPointSize
                 }
             }
+
+
         }
+
+
+
     }
 
 
