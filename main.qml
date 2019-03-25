@@ -1,7 +1,7 @@
-import QtQuick 2.11
-import QtQuick.Window 2.11
-import QtQuick.Controls 2.4
-import QtQuick.Layouts 1.11
+import QtQuick 2.12
+import QtQuick.Window 2.12
+import QtQuick.Controls 2.5
+import QtQuick.Layouts 1.12
 
 /*
   The name today (2018-09-04) of this project/repo is XBalancerQML_GUIexperiment. Actually it contains two things.
@@ -292,15 +292,5 @@ ApplicationWindow {
         id: stackView        
         initialItem: "HomeForm.qml"        
         anchors.fill: parent
-
-        onCurrentItemChanged: { bindMainWindowPropsToCurrVisibleItem() }
-
-        Component.onCompleted: {bindMainWindowPropsToCurrVisibleItem() }
-        function bindMainWindowPropsToCurrVisibleItem() {
-            console.log("Inside this magic")
-
-            currentItem.buttonPointSize = Qt.binding(function() { return mainWindow.buttonPointSize } ) //to advanced
-            console.log("This is foo in currentItem: " + currentItem.foo)
-        }
     }
 }

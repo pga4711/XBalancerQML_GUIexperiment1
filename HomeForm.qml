@@ -1,14 +1,14 @@
-import QtQuick 2.9
-import QtQuick.Controls 2.3
-import QtQuick.Layouts 1.3
-import QtCharts 2.2
+import QtQuick 2.12
+import QtQuick.Controls 2.5
+import QtQuick.Layouts 1.11
+import QtCharts 2.3
 
 Page {
     id: currentPage
     //id: mainWindow //BAD NAME. This is just for a quick connect to automatic-textSize concept.
     title: qsTr("Page: HomeForm.qml")
 
-    property int buttonPointSize: 30
+    //property int buttonPointSize: 30
     property string foo: "hellofrom curr page"
 
 
@@ -27,6 +27,9 @@ Page {
                 id: leftCPCV
                 title: "Left Polar Diagram"
 
+
+                titleFont.pointSize: mainWindow.buttonPointSize
+
                 legend.visible: false
                 antialiasing: true
                 Layout.fillHeight: true
@@ -39,16 +42,20 @@ Page {
 
 
 
+
                 ValueAxis {
                     id: axisAngularLeft
+                    titleFont.pointSize: mainWindow.buttonPointSize*0.9
+                    labelsFont.pointSize: mainWindow.buttonPointSize*0.9
                     min: 0
                     max: 360
                     tickCount: 9
                 }
                 ValueAxis {
                     id: axisRadialLeft
+                    titleFont.pointSize: mainWindow.buttonPointSize*0.9
+                    labelsFont.pointSize: mainWindow.buttonPointSize*0.9
                     min: 0
-
                     max: leftCPCV.currentDiagramMaxValueLeftCPCV
                     tickCount: 6
                     visible: true
@@ -108,7 +115,7 @@ Page {
                     text: "-"
 
                     //font.pointSize: 25 * 2
-                    font.pointSize: currentPage.buttonPointSize*2
+                    font.pointSize: mainWindow.buttonPointSize*2
                     onClicked: {
                         var possibleDiagramMaxValue = parent.currentDiagramMaxValueLeftCPCV*1.15
                         var worstCaseMaxZoomValue = parent.currentMaxLimitLeftCPCV*1.2
@@ -138,7 +145,7 @@ Page {
 
 
                     text: "+"
-                    font.pointSize: currentPage.buttonPointSize*2
+                    font.pointSize: mainWindow.buttonPointSize*2
                     //font.pointSize: 25
 
                     onClicked: {
@@ -218,13 +225,16 @@ Page {
                 //rightPolarChartView
                 id: rightCPCV
                 title: "Right Polar Diagram"
+
+                titleFont.pointSize: mainWindow.buttonPointSize
+
                 legend.visible: false
                 antialiasing: true
                 Layout.fillHeight: true;
                 Layout.fillWidth: true
                 //titleFont.pointSize: 40
 
-                //Binding { target: rightCPCV.titleFont ; property: "pointSize"; value: currentPage.buttonPointSize }
+                //Binding { target: rightCPCV.titleFont ; property: "pointSize"; value: mainWindow.buttonPointSize }
 
 
                 property double currentDiagramMaxValueRightCPCV: 0  //This is to get access to max in axisRadialRight.max
@@ -233,27 +243,17 @@ Page {
 
                 ValueAxis {
                     id: axisAngularRight
+                    titleFont.pointSize: mainWindow.buttonPointSize*0.9
+                    labelsFont.pointSize: mainWindow.buttonPointSize*0.9
                     min: 0
                     max: 360
                     tickCount: 9
-
-
-                    //This "Binding" gives: qrc:/main.qml:213:5: QML StackView: initialItem: qrc:/HomeForm.qml:236 Cannot assign to non-existent default property
-                    //Binding { target: axisAngularRight.titleFont ; property: "pointSize"; value: currentPage.buttonPointSize }
-
-                    Component.onCompleted: {
-                        console.log("This is titleFont:" + titleFont.pointSize )
-
-                        //Does not even tell it does not work.
-                        titleFont.pointSize = Qt.binding( function() { return currentPage.buttonPointSize } )
-                        console.log("Does not work ight?")
-                        titleFont.pointSize= 40
-                        console.log("This is titleFont:" + titleFont.pointSize )
-                    }
                 }
 
                 ValueAxis {
                     id: axisRadialRight
+                    titleFont.pointSize: mainWindow.buttonPointSize*0.9
+                    labelsFont.pointSize: mainWindow.buttonPointSize*0.9
                     min: 0
                     max: rightCPCV.currentDiagramMaxValueRightCPCV
                     tickCount: 6
@@ -312,7 +312,7 @@ Page {
 
 
                     text: "-"
-                    font.pointSize: currentPage.buttonPointSize*2
+                    font.pointSize: mainWindow.buttonPointSize*2
                     //font.pointSize: 25
                     onClicked: {
                         var possibleDiagramMaxValue = parent.currentDiagramMaxValueRightCPCV*1.15
@@ -343,7 +343,7 @@ Page {
 
                     text: "+"
                     //font.pointSize: 25
-                    font.pointSize: currentPage.buttonPointSize*2
+                    font.pointSize: mainWindow.buttonPointSize*2
 
                     onClicked: {
                         var possibleDiagramMaxValue = parent.currentDiagramMaxValueRightCPCV*0.85 //15% zoomning
@@ -436,43 +436,43 @@ Page {
                 Button {
                     id: button
                     text: "Help"
-                     font.pointSize: currentPage.buttonPointSize
+                     font.pointSize: mainWindow.buttonPointSize
                 }
                 Button {
                     text: "Print"
-                     font.pointSize: currentPage.buttonPointSize
+                     font.pointSize: mainWindow.buttonPointSize
                 }
                 Button {
                     text: "Stop"
-                     font.pointSize: currentPage.buttonPointSize
+                     font.pointSize: mainWindow.buttonPointSize
                 }
                 Button {
                     text: "Measure"
-                     font.pointSize: currentPage.buttonPointSize
+                     font.pointSize: mainWindow.buttonPointSize
                 }
                 Button {
                     text: "Exit"
-                     font.pointSize: currentPage.buttonPointSize
+                     font.pointSize: mainWindow.buttonPointSize
                 }
                 Button {
                     text: "Static Couple"
-                     font.pointSize: currentPage.buttonPointSize
+                     font.pointSize: mainWindow.buttonPointSize
                 }
                 Button {
                     text: "Remove weights"
-                    font.pointSize: currentPage.buttonPointSize
+                    font.pointSize: mainWindow.buttonPointSize
                 }
                 Button {
                     text: "Split On"
-                     font.pointSize: currentPage.buttonPointSize
+                     font.pointSize: mainWindow.buttonPointSize
                 }
                 Button {
                     text: "Change Unit"
-                     font.pointSize: currentPage.buttonPointSize
+                     font.pointSize: mainWindow.buttonPointSize
                 }
                 Button {
                     text: "Trace On"
-                     font.pointSize: currentPage.buttonPointSize
+                     font.pointSize: mainWindow.buttonPointSize
                 }
             }
 

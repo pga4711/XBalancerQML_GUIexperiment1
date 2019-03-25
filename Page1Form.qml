@@ -9,12 +9,12 @@ Page {
     title: qsTr("Page 1 QML!!! non ui")
 
 
-
     Label {
         id: label1
         text: qsTr("You are on Page 1 QML!!!!! non ui")
         anchors.top: parent.top
         anchors.left: parent.left
+        font.pointSize: mainWindow.buttonPointSize
         Component.onCompleted: {console.log("4") }
     }
 
@@ -24,6 +24,8 @@ Page {
 
         anchors.top: label1.bottom
         anchors.left: parent.left
+        font.pointSize: mainWindow.buttonPointSize
+
         Component.onCompleted: {console.log("3") }
     }
 
@@ -32,6 +34,7 @@ Page {
         text: "hello press meX2"
         anchors.top: button1.bottom
         anchors.left: parent.left
+        font.pointSize: mainWindow.buttonPointSize
         Component.onCompleted: {console.log("2") }
     }
 

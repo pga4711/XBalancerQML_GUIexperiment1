@@ -29,3 +29,17 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES +=
+
+# To build a standalone executable exe with associated files.
+false {
+BUILD_TYPE = debug
+CONFIG(release, debug|release): BUILD_TYPE = release
+QML_PATH = $$PWD
+
+win32 {
+    TARGET_EXT = .exe
+    DEPLOY_COMMAND = $$[QT_INSTALL_BINS]/windeployqt --$${BUILD_TYPE} --compiler-runtime --qmldir $$shell_quote($$shell_path($$QML_PATH))
+    DEPLOY_TARGET = $$shell_quote($$shell_path($${OUT_PWD}/$${BUILD_TYPE}/$${TARGET}$${TARGET_EXT}))
+    QMAKE_POST_LINK += $${DEPLOY_COMMAND} $${DEPLOY_TARGET}
+}
+}
